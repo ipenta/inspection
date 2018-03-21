@@ -14,36 +14,6 @@ h4 {
     padding: 0;
 }
 
-.el-row {
-    margin-bottom: 0;
-}
-
-.el-col {
-    height: 50px;
-    line-height: 50px;
-    font-size: 14px;
-    text-align: center;
-}
-
-.title .el-col {
-    border-top: 1px solid #ddd;
-    border-left: 1px solid #ddd;
-    border-bottom: 1px solid #ddd;
-}
-
-.title .el-col:last-child {
-    border-right: 1px solid #ddd;
-}
-
-.body .el-col {
-    border-left: 1px solid #ddd;
-    border-bottom: 1px solid #ddd;
-}
-
-.body .el-col:last-child {
-    border-right: 1px solid #ddd;
-}
-
 </style>
 
 <template lang="html">
@@ -88,47 +58,19 @@ h4 {
     </el-form>
     <!-- 受理委托 -->
     <h4>委托项目</h4>
-    <el-row class="title">
-        <el-col :span="4">
-            材料/项目名称
-        </el-col>
-        <el-col :span="2">
-            现场检测
-        </el-col>
-        <el-col :span="2">
-            生产厂家
-        </el-col>
-        <el-col :span="2">
-            收费标准
-        </el-col>
-        <el-col :span="2">
-            检测数量
-        </el-col>
-        <el-col :span="2">
-            检测类别
-        </el-col>
-        <el-col :span="2">
-            项目单位
-        </el-col>
-        <el-col :span="2">
-            项目单位
-        </el-col>
-        <el-col :span="2">
-            项目单位
-        </el-col>
-    </el-row>
-    <el-row class="body">
-        <el-form :inline="true" :model="formInline">
-        </el-form>
-    </el-row>
-
+    <LineTable></LineTable>
 </el-main>
 
 </template>
 
 <script>
 
+import LineTable from '@/components/table/LineTable'
+
 export default {
+    components: {
+        LineTable
+    },
     data: function() {
         return {
             loading: false,

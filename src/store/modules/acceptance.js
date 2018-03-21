@@ -1,9 +1,9 @@
 const acceptance = {
-    state:{
-        proacceptance:{}
+    state: {
+        proacceptance: {}
     },
-    mutations:{},
-    actions:{}
+    mutations: {},
+    actions: {}
 }
 
 export default acceptance
