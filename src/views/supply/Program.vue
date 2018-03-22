@@ -16,7 +16,7 @@
             <el-input lazy v-model="form.name" style="width:350px;"></el-input>
         </el-form-item>
         <el-form-item label="工程地址" prop="address" style="width:100%">
-            <myarea @select="haha"></myarea>
+
             <el-input v-model="form.desc" style="width:350px;"></el-input>
         </el-form-item>
     </el-form>
@@ -25,13 +25,13 @@
         <el-form-item label="建设单位" prop="name">
             <el-input lazy v-model="form.name"></el-input>
         </el-form-item>
-        <el-form-item label="建设单位" prop="name">
+        <el-form-item label="施工单位" prop="name">
             <el-input lazy v-model="form.name"></el-input>
         </el-form-item>
-        <el-form-item label="建设单位" prop="name">
+        <el-form-item label="监理单位" prop="name">
             <el-input lazy v-model="form.name"></el-input>
         </el-form-item>
-        <el-form-item label="建设单位" prop="name">
+        <el-form-item label="设计单位" prop="name">
             <el-input lazy v-model="form.name"></el-input>
         </el-form-item>
     </el-form>
