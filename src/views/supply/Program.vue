@@ -11,7 +11,7 @@
 <el-main>
     <h3>新工程</h3>
     <h4>工程参数</h4>
-    <el-form ref="form" :model="form" :rules="rules" label-width="120px" label-position="top">
+    <el-form ref="form" :model="form" label-width="120px" label-position="top">
         <el-form-item label="工程名称" prop="name">
             <el-input lazy v-model="form.name" style="width:350px;"></el-input>
         </el-form-item>
@@ -21,28 +21,59 @@
         </el-form-item>
     </el-form>
     <h4>工程单位</h4>
+    <el-button @click="formVisible=true">新建单位信息</el-button>
     <el-form>
-        <el-form-item label="建设单位" prop="name">
-            <el-input lazy v-model="form.name"></el-input>
+        <el-form-item label="建设单位">
+            <el-select v-model="form.constructer" filterable remote :remote-method="handleFilterConstructer()">
+                <el-option v-for="(constructer,index) in constructers" :key="index" :label="constructer.name" :value="constructer.name">
+                </el-option>
+            </el-select>
         </el-form-item>
-        <el-form-item label="施工单位" prop="name">
-            <el-input lazy v-model="form.name"></el-input>
+        <el-form-item label="施工单位">
+            <el-select v-model="form.builder" filterable remote :remote-method="handleFilterBuilder()">
+                <el-option v-for="(builder,index) in builders" :key="index" :label="builder.name" :value="builder.name">
+                </el-option>
+            </el-select>
         </el-form-item>
-        <el-form-item label="监理单位" prop="name">
-            <el-input lazy v-model="form.name"></el-input>
+        <el-form-item label="监理单位">
+            <el-select v-model="form.supervisor" filterable remote :remote-method="handleFilterSupervisor()">
+                <el-option v-for="(supervisor,index) in supervisors" :key="index" :label="supervisor.name" :value="supervisor.name">
+                </el-option>
+            </el-select>
         </el-form-item>
-        <el-form-item label="设计单位" prop="name">
-            <el-input lazy v-model="form.name"></el-input>
+        <el-form-item label="设计单位">
+            <el-select v-model="form.designer" filterable remote :remote-method="handleFilterDesigner()">
+                <el-option v-for="(designer,index) in designers" :key="index" :label="designer.name" :value="designer.name">
+                </el-option>
+            </el-select>
         </el-form-item>
     </el-form>
+    <el-dialog title="添加单位" :visible.sync="formVisible">
+        <el-form :model="unitForm" ref="unitForm" :rules="unitFormRules">
+            <el-form-item label="单位类型" label-width="80px" prop="type">
+                <el-select v-model="unitForm.type" placeholder="请选择单位类型">
+                    <el-option label="建设单位" value="constructer"></el-option>
+                    <el-option label="施工单位" value="builder"></el-option>
+                    <el-option label="监理单位" value="supervisor"></el-option>
+                    <el-option label="设计单位" value="designer"></el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item label="单位名称" label-width="80px" prop="name">
+                <el-input v-model="unitForm.name" auto-complete="off"></el-input>
+            </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="formVisible=false">取 消</el-button>
+            <el-button type="primary" @click="submitForm('unitForm',handlerSubmitUnitForm)">确 定</el-button>
+        </div>
+    </el-dialog>
 </el-main>
 
 </template>
 
 <script>
 
-import myarea from 'vue-myarea'
-
+import api from '@/api/crop'
 export default {
     data: function() {
         return {
@@ -51,39 +82,121 @@ export default {
                 address: '',
                 builder: '',
                 client: '',
-                desc: ''
+                desc: '',
+                constructer: '',
+                supervisor: '',
+                designer: ''
             },
-            rules: {},
-            options2: [{
-                label: '江苏',
-                cities: []
-            }, {
-                label: '浙江',
-                cities: []
-            }],
-            props: {
-                value: 'label',
-                children: 'cities'
-            }
+            unitForm: {
+                type: '',
+                name: ''
+            },
+            unitFormRules: {
+                name: [{
+                    required: true,
+                    message: '请输入活动名称',
+                    trigger: 'blur'
+                }, {
+                    min: 2,
+                    max: 20,
+                    message: '长度在 2 到 20 个字符',
+                    trigger: 'blur'
+                }],
+                type: [{
+                    required: true,
+                    message: '请选择企业类型',
+                    trigger: 'change'
+                }]
+            },
+            formVisible: false,
+            constructers: [],
+            builders: [],
+            supervisors: [],
+            designers: []
         }
     },
-    components: {
-        myarea
-    },
     methods: {
-        handleItemChange(val) {
-            console.log('active item:', val)
-            setTimeout(_ => {
-                if (val.indexOf('江苏') > -1 && !this.options2[0].cities.length) {
-                    this.options2[0].cities = [{
-                        label: '南京'
-                    }]
-                } else if (val.indexOf('浙江') > -1 && !this.options2[1].cities.length) {
-                    this.options2[1].cities = [{
-                        label: '杭州'
-                    }]
+        handleFilterConstructer: function() {
+            let that = this
+            return async function(query) {
+                if (query !== '') {
+                    let resp = await api.fetchCropByType({
+                        type: 'constructer',
+                        query: query
+                    })
+                    that.constructers = resp.data
+                } else {
+                    that.constructers = []
                 }
-            }, 300)
+            }
+        },
+        handleFilterBuilder: function() {
+            let that = this
+            return async function(query) {
+                if (query !== '') {
+                    let resp = await api.fetchCropByType({
+                        type: 'builder',
+                        query: query
+                    })
+                    that.builders = resp.data
+                } else {
+                    that.builders = []
+                }
+            }
+        },
+        handleFilterSupervisor: function() {
+            let that = this
+            return async function(query) {
+                if (query !== '') {
+                    let resp = await api.fetchCropByType({
+                        type: 'supervisor',
+                        query: query
+                    })
+                    that.supervisors = resp.data
+                } else {
+                    that.supervisors = []
+                }
+            }
+        },
+        handleFilterDesigner: function() {
+            let that = this
+            return async function(query) {
+                if (query !== '') {
+                    let resp = await api.fetchCropByType({
+                        type: 'designer',
+                        query: query
+                    })
+                    that.designers = resp.data
+                } else {
+                    that.designers = []
+                }
+            }
+        },
+        submitForm(formName, callback) {
+            let targetForm = this.$refs[formName]
+            targetForm.validate(valid => {
+                if (valid && callback()) {
+                    this.$notify({
+                        title: '成功',
+                        message: '成功',
+                        type: 'success',
+                        duration: 2000
+                    })
+                    targetForm.resetFields()
+                } else {
+                    console.log('error submit!!')
+                    return false
+                }
+            })
+        },
+        handlerSubmitUnitForm: async function() {
+            const resp = await api.createCrop(this.unitForm)
+            if (resp.data.state === 200) {
+                this.formVisible = false
+                return true
+            } else {
+                return false
+            }
         }
     }
 }

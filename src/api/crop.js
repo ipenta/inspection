@@ -1,11 +1,18 @@
 import request from '@/utils/request'
 
 export default {
-    fetchCropByType: function(query) {
+    fetchCropByType: function(params) {
         return request({
             url: '/api/crop',
             method: 'get',
-            params: query
+            params: params
+        })
+    },
+    createCrop: function(data) {
+        return request({
+            url: '/api/crop/create',
+            method: 'post',
+            data
         })
     }
 }

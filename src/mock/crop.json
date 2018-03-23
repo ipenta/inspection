@@ -1,31 +1,31 @@
 [{
-    "type": 2,
-    "name": "监理单位A"
-}, {
-    "type": 2,
-    "name": "监理单位B"
-}, {
-    "type": 2,
-    "name": "监理单位C"
-}, {
-    "type": 2,
-    "name": "监理单位D"
-}, {
-    "type": 0,
+    "type": "constructer",
     "name": "建设单位A"
 }, {
-    "type": 0,
+    "type": "constructer",
     "name": "建设单位B"
 }, {
-    "type": 1,
+    "type": "constructer",
+    "name": "建设单位C"
+}, {
+    "type": "constructer",
+    "name": "建设单位D"
+}, {
+    "type": "builder",
+    "name": "施工单位A"
+}, {
+    "type": "builder",
+    "name": "施工单位B"
+}, {
+    "type": "supervisor",
     "name": "监理单位C"
 }, {
-    "type": 1,
+    "type": "supervisor",
     "name": "监理单位D"
 }, {
-    "type": 3,
+    "type": "designer",
     "name": "设计单位F"
 }, {
-    "type": 3,
+    "type": "designer",
     "name": "设计单位G"
 }]
