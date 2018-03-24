@@ -28,22 +28,21 @@
                 <el-option v-for="(constructer,index) in constructers" :key="index" :label="constructer.name" :value="constructer.name">
                 </el-option>
             </el-select>
-            {{constructers}}
         </el-form-item>
         <el-form-item label="施工单位">
-            <el-select v-model="form.builder" filterable remote :remote-method="handleFilterBuilder">
+            <el-select v-model="form.builder" filterable remote :remote-method="handleRemoteQuery('builder',builders)">
                 <el-option v-for="(builder,index) in builders" :key="index" :label="builder.name" :value="builder.name">
                 </el-option>
             </el-select>
         </el-form-item>
         <el-form-item label="监理单位">
-            <el-select v-model="form.supervisor" filterable remote :remote-method="handleFilterSupervisor">
+            <el-select v-model="form.supervisor" filterable remote :remote-method="handleRemoteQuery('supervisor',supervisors)">
                 <el-option v-for="(supervisor,index) in supervisors" :key="index" :label="supervisor.name" :value="supervisor.name">
                 </el-option>
             </el-select>
         </el-form-item>
         <el-form-item label="设计单位">
-            <el-select v-model="form.designer" filterable remote :remote-method="handleFilterDesigner">
+            <el-select v-model="form.designer" filterable remote :remote-method="handleRemoteQuery('designer',designers)">
                 <el-option v-for="(designer,index) in designers" :key="index" :label="designer.name" :value="designer.name">
                 </el-option>
             </el-select>
