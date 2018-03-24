@@ -118,18 +118,18 @@ export default {
     },
     methods: {
         handleRemoteQuery: function(type, crops) {
+            // 修改crops无法让对应参数获取到数据
+            // 采用push方法能激活observer响应，concat不行
             return async function(query) {
                 if (query !== '') {
+                    crops.length = 0
                     let resp = await api.fetchCropByType({
                         type: type,
                         query: query
                     })
-                    const data = resp.data
-                    console.log(data)
-                    crops = crops.concat(data)
-                    console.log(crops.length)
+                    resp.data.map(item => crops.push(item))
                 } else {
-                    crops = []
+                    crops.length = 0
                 }
             }
         },
