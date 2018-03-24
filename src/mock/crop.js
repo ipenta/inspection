@@ -20,15 +20,7 @@ export default {
     createCrop: options => {
         try {
             crop.push(JSON.parse(options.body))
-            return {
-                state: 200,
-                crop: crop
-            }
-        } catch (e) {
-            return {
-                state: 301,
-                error: e
-            }
-        }
+            return crop
+        } catch (e) {}
     }
 }

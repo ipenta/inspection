@@ -24,30 +24,31 @@
     <el-button @click="formVisible=true">新建单位信息</el-button>
     <el-form>
         <el-form-item label="建设单位">
-            <el-select v-model="form.constructer" filterable remote :remote-method="handleFilterConstructer()">
+            <el-select v-model="form.constructer" filterable remote :remote-method="handleRemoteQuery('constructer')">
                 <el-option v-for="(constructer,index) in constructers" :key="index" :label="constructer.name" :value="constructer.name">
                 </el-option>
             </el-select>
         </el-form-item>
         <el-form-item label="施工单位">
-            <el-select v-model="form.builder" filterable remote :remote-method="handleFilterBuilder()">
+            <el-select v-model="form.builder" filterable remote :remote-method="handleFilterBuilder">
                 <el-option v-for="(builder,index) in builders" :key="index" :label="builder.name" :value="builder.name">
                 </el-option>
             </el-select>
         </el-form-item>
         <el-form-item label="监理单位">
-            <el-select v-model="form.supervisor" filterable remote :remote-method="handleFilterSupervisor()">
+            <el-select v-model="form.supervisor" filterable remote :remote-method="handleFilterSupervisor">
                 <el-option v-for="(supervisor,index) in supervisors" :key="index" :label="supervisor.name" :value="supervisor.name">
                 </el-option>
             </el-select>
         </el-form-item>
         <el-form-item label="设计单位">
-            <el-select v-model="form.designer" filterable remote :remote-method="handleFilterDesigner()">
+            <el-select v-model="form.designer" filterable remote :remote-method="handleFilterDesigner">
                 <el-option v-for="(designer,index) in designers" :key="index" :label="designer.name" :value="designer.name">
                 </el-option>
             </el-select>
         </el-form-item>
     </el-form>
+    {{unitForm}}
     <el-dialog title="添加单位" :visible.sync="formVisible">
         <el-form :model="unitForm" ref="unitForm" :rules="unitFormRules">
             <el-form-item label="单位类型" label-width="80px" prop="type">
@@ -59,12 +60,12 @@
                 </el-select>
             </el-form-item>
             <el-form-item label="单位名称" label-width="80px" prop="name">
-                <el-input v-model="unitForm.name" auto-complete="off"></el-input>
+                <el-input v-model="unitForm.name"></el-input>
             </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
             <el-button @click="formVisible=false">取 消</el-button>
-            <el-button type="primary" @click="submitForm('unitForm',handlerSubmitUnitForm)">确 定</el-button>
+            <el-button type="primary" @click="submitForm('unitForm')">确 定</el-button>
         </div>
     </el-dialog>
 </el-main>
@@ -116,6 +117,23 @@ export default {
         }
     },
     methods: {
+        handleRemoteQuery: function(type) {
+            let that = this
+            return async function(query) {
+                if (query !== '') {
+                    let resp = await api.fetchCropByType({
+                        type: type,
+                        query: query
+                    })
+                    that.constructers = resp.data.map(item => ({
+                        type: item.type,
+                        name: item.name
+                    }))
+                } else {
+                    that.constructers = []
+                }
+            }
+        },
         handleFilterConstructer: function() {
             let that = this
             return async function(query) {
@@ -124,6 +142,7 @@ export default {
                         type: 'constructer',
                         query: query
                     })
+                    console.log(that.constructers)
                     that.constructers = resp.data
                 } else {
                     that.constructers = []
@@ -172,10 +191,10 @@ export default {
                 }
             }
         },
-        submitForm(formName, callback) {
-            let targetForm = this.$refs[formName]
+        submitForm: function(formName) {
+            const targetForm = this.$refs[formName]
             targetForm.validate(valid => {
-                if (valid && callback()) {
+                if (valid && this.handlerSubmitUnitForm()) {
                     this.$notify({
                         title: '成功',
                         message: '成功',
@@ -190,8 +209,12 @@ export default {
             })
         },
         handlerSubmitUnitForm: async function() {
-            const resp = await api.createCrop(this.unitForm)
-            if (resp.data.state === 200) {
+            const resp = await api.createCrop({
+                type: this.unitForm.type,
+                name: this.unitForm.name
+            })
+            console.log(resp.data)
+            if (resp.status === 200) {
                 this.formVisible = false
                 return true
             } else {
