@@ -125,10 +125,7 @@ export default {
                         type: type,
                         query: query
                     })
-                    that.constructers = resp.data.map(item => ({
-                        type: item.type,
-                        name: item.name
-                    }))
+                    that.constructers = resp.data.map(item => (item))
                 } else {
                     that.constructers = []
                 }
