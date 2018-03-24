@@ -24,10 +24,11 @@
     <el-button @click="formVisible=true">新建单位信息</el-button>
     <el-form>
         <el-form-item label="建设单位">
-            <el-select v-model="form.constructer" filterable remote :remote-method="handleRemoteQuery('constructer')">
+            <el-select v-model="form.constructer" filterable remote :remote-method="handleRemoteQuery('constructer',constructers)">
                 <el-option v-for="(constructer,index) in constructers" :key="index" :label="constructer.name" :value="constructer.name">
                 </el-option>
             </el-select>
+            {{constructers}}
         </el-form-item>
         <el-form-item label="施工单位">
             <el-select v-model="form.builder" filterable remote :remote-method="handleFilterBuilder">
@@ -48,7 +49,6 @@
             </el-select>
         </el-form-item>
     </el-form>
-    {{unitForm}}
     <el-dialog title="添加单位" :visible.sync="formVisible">
         <el-form :model="unitForm" ref="unitForm" :rules="unitFormRules">
             <el-form-item label="单位类型" label-width="80px" prop="type">
@@ -117,17 +117,19 @@ export default {
         }
     },
     methods: {
-        handleRemoteQuery: function(type) {
-            let that = this
+        handleRemoteQuery: function(type, crops) {
             return async function(query) {
                 if (query !== '') {
                     let resp = await api.fetchCropByType({
                         type: type,
                         query: query
                     })
-                    that.constructers = resp.data.map(item => (item))
+                    const data = resp.data
+                    console.log(data)
+                    crops = crops.concat(data)
+                    console.log(crops.length)
                 } else {
-                    that.constructers = []
+                    crops = []
                 }
             }
         },
